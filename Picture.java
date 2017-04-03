@@ -53,6 +53,8 @@ public class Picture {
 		    c.draw();
 		} else if (cmd.equals("save")) {
 		    c.save(sc.next());
+		} else if (cmd.equals("mode")) {
+		    c.setMode(sc.nextInt());
 		} else if (cmd.equals("reset")) {
 		    c = new Canvas(sc.nextInt(), sc.nextInt(),
 				   sc.nextInt(), sc.nextInt(), sc.nextInt());

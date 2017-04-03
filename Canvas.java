@@ -10,6 +10,7 @@ public class Canvas {
     private Matrix edges; // Lines
     private Matrix transform; // Transformation Matrix
     private int x, y; // Dimensions
+    private int mode; // Edges or Polygons
     
     // Constructors
     public Canvas() {
@@ -19,6 +20,11 @@ public class Canvas {
 	fill(255, 255, 255);
 	edges = new Matrix();
 	transform = Matrix.identity(4);
+	mode = 2;
+    }
+    public Canvas(int md) {
+	this();
+	mode = md;
     }
     public Canvas(int x, int y) {
 	canvas = new Pixel[y][x];
@@ -27,14 +33,29 @@ public class Canvas {
 	fill(255, 255, 255);
 	edges = new Matrix();
 	transform = Matrix.identity(4);
+	mode = 2;
+    }
+    public Canvas(int x, int y, int md) {
+	this(x, y);
+	mode = md;
     }
     public Canvas(int x, int y, Pixel p) {
 	this(x, y);
 	fill(p);
+	mode = 2;
+    }
+    public Canvas(int x, int y, Pixel p, int md) {
+	this(x, y, p);
+	mode = md;
     }
     public Canvas(int x, int y, int R, int G, int B) {
 	this(x, y);
 	fill(R, G, B);
+	mode = 2;
+    }
+    public Canvas(int x, int y, int R, int G, int B, int md) {
+	this(x, y, R, G, B);
+	mode = md;
     }
 
     // Accessors + Mutators
@@ -52,6 +73,13 @@ public class Canvas {
     }
     public Matrix getTransform() {
 	return transform;
+    }
+    public int getMode() {
+	return mode;
+    }
+
+    public int setMode(int md) {
+	return mode = md;
     }
 
     // Transformations
@@ -328,14 +356,29 @@ public class Canvas {
     public boolean draw() {
 	Iterator<double[]> edgelist = edges.iterator();
 	Iterator<Pixel> colors = edges.colorIterator();
+	double[] p1, p2;
+	double[] p3 = new double[2];
+	int x1, x2, y1, y2;
+	int x3 = -1; int y3 = -1;
+	Pixel p;
 	while (edgelist.hasNext()) {
-	    double[] p1 = edgelist.next();
-	    double[] p2 = edgelist.next();
-	    int x1 = (int)(p1[0]);
-	    int y1 = (int)(p1[1]);
-	    int x2 = (int)(p2[0]);
-	    int y2 = (int)(p2[1]);
-	    line(x1, y1, x2, y2, colors.next());
+	    p1 = edgelist.next();
+	    p2 = edgelist.next();
+	    if (mode == 3) p3 = edgelist.next();
+	    x1 = (int)(p1[0]);
+	    y1 = (int)(p1[1]);
+	    x2 = (int)(p2[0]);
+	    y2 = (int)(p2[1]);
+	    if (mode == 3) {
+		x3 = (int)(p3[0]);
+		y3 = (int)(p3[1]);
+	    }
+	    p = colors.next();
+	    line(x1, y1, x2, y2, p);
+	    if (mode == 3) {
+		line(x2, y2, x3, y3, p);
+		line(x3, y3, x1, y1, p);
+	    }
 	}
 	return true;
     }
