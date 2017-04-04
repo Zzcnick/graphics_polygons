@@ -69,29 +69,30 @@ public class Picture {
 	
 	int frame = 0;
 	c.savestate(); // Background
+	c.sphere(0,0,0,100);
 	c.torus(0,0,0,30,150);
 	c.rotate('x', 30);
 	c.rotate('y', 30);
 	c.translate(250,250,0);
 	c.apply();
 	
-	c.draw();
-	c.save("out.ppm");
-	// // GIF
-	// for (int r = 0; r < 360; r += 3) {
-	//     String buffer = "" + frame;
-	//     while (buffer.length() < 3)
-	//    	buffer = "0" + buffer;
-	//     c.draw();
-	//     c.save(buffer + ".ppm");
-	//     c.load();
+	//c.draw();
+	//c.save("out.ppm");
+ 	// GIF
+	for (int r = 0; r < 360; r += 3) {
+	    String buffer = "" + frame;
+	    while (buffer.length() < 3)
+	   	buffer = "0" + buffer;
+	    c.draw();
+	    c.save(buffer + ".ppm");
+	    c.load();
 
-	//     frame++;
-	//     c.translate(-250,-250,0);
-	//     c.rotate('y', 3);
-	//     c.translate(250,250,0);
-	//     c.apply();
-	//}
+	    frame++;
+	    c.translate(-250,-250,0);
+	    c.rotate('y', 3);
+	    c.translate(250,250,0);
+	    c.apply();
+	}
 	// ==================================== */
 
 

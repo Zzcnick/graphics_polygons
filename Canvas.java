@@ -283,9 +283,9 @@ public class Canvas {
 	Matrix em = new Matrix();
 	double s; // Circle
 	double t; // Rotation
-	int n = 20; // Steps / 2
+	int n = 10; // Steps / 2
 	double ds = Math.PI / n; // Circle Step
-	double dt = ds * 2; // Rotation Step
+	double dt = ds / 2; // Rotation Step
 	double x, y, z;
 
 	if (mode == 2) {
@@ -323,12 +323,12 @@ public class Canvas {
 		    z = r * Math.sin(s) + cz;
 		    if (c > 0)
 			em.add_triangle(x,y,z,
-					sc[c-1][0],sc[c-1][1],sc[c-1][2],
-					sc[c][0],sc[c][1],sc[c][2],p);
+					sc[c][0],sc[c][1],sc[c][2],
+					sc[c-1][0],sc[c-1][1],sc[c-1][2],p);
 		    if (c < 2 * n)
 			em.add_triangle(x,y,z,
-					sc[c][0],sc[c][1],sc[c][2],
-					sc[c+1][0],sc[c+1][1],sc[c+1][2],p);
+					sc[c+1][0],sc[c+1][1],sc[c+1][2],
+					sc[c][0],sc[c][1],sc[c][2],p);
 		    sc[c][0] = x; sc[c][1] = y; sc[c][2] = z;
 		    c++;
 		}
