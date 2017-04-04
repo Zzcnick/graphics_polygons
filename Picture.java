@@ -63,6 +63,38 @@ public class Picture {
 	    return;
 	} 
 
+	// Polygons ===========================
+	Canvas c = new Canvas(500, 500, 255, 255, 255, 3);
+	Pixel p = new Pixel(0,0,0);
+	
+	int frame = 0;
+	c.savestate(); // Background
+	c.torus(0,0,0,30,150);
+	c.rotate('x', 30);
+	c.rotate('y', 30);
+	c.translate(250,250,0);
+	c.apply();
+	
+	c.draw();
+	c.save("out.ppm");
+	// // GIF
+	// for (int r = 0; r < 360; r += 3) {
+	//     String buffer = "" + frame;
+	//     while (buffer.length() < 3)
+	//    	buffer = "0" + buffer;
+	//     c.draw();
+	//     c.save(buffer + ".ppm");
+	//     c.load();
+
+	//     frame++;
+	//     c.translate(-250,-250,0);
+	//     c.rotate('y', 3);
+	//     c.translate(250,250,0);
+	//     c.apply();
+	//}
+	// ==================================== */
+
+
 	/* // Curves  ============================
 	Canvas c = new Canvas(500, 500, 0, 40, 60);
 	Pixel p = new Pixel(240, 250, 255);

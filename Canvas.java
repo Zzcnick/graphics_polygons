@@ -162,23 +162,45 @@ public class Canvas {
     public Matrix box_edges(double x, double y, double z, 
 			    double dx, double dy, double dz, Pixel p) {
 	Matrix em = new Matrix();
-	em.add_edge(x,y,z,x+dx,y,z,p);
-	em.add_edge(x,y,z,x,y-dy,z,p);
-	em.add_edge(x,y,z,x,y,z-dz,p);
-	em.add_edge(x+dx,y,z,x+dx,y-dy,z,p);
-	em.add_edge(x+dx,y,z,x+dx,y,z-dz,p);
-	em.add_edge(x,y-dy,z,x+dx,y-dy,z,p);
-	em.add_edge(x,y-dy,z,x,y-dy,z-dz,p);
-	em.add_edge(x,y,z-dz,x+dx,y,z-dz,p);
-	em.add_edge(x,y,z-dz,x,y-dy,z-dz,p);
-	em.add_edge(x+dx,y-dy,z,x+dx,y-dy,z-dz,p);
-	em.add_edge(x+dx,y,z-dz,x+dx,y-dy,z-dz,p);
-	em.add_edge(x,y-dy,z-dz,x+dx,y-dy,z-dz,p);
+	
+	if (mode == 2) {
+	    // Edge Implementation ==============
+	    em.add_edge(x,y,z,x+dx,y,z,p);
+	    em.add_edge(x,y,z,x,y-dy,z,p);
+	    em.add_edge(x,y,z,x,y,z-dz,p);
+	    em.add_edge(x+dx,y,z,x+dx,y-dy,z,p);
+	    em.add_edge(x+dx,y,z,x+dx,y,z-dz,p);
+	    em.add_edge(x,y-dy,z,x+dx,y-dy,z,p);
+	    em.add_edge(x,y-dy,z,x,y-dy,z-dz,p);
+	    em.add_edge(x,y,z-dz,x+dx,y,z-dz,p);
+	    em.add_edge(x,y,z-dz,x,y-dy,z-dz,p);
+	    em.add_edge(x+dx,y-dy,z,x+dx,y-dy,z-dz,p);
+	    em.add_edge(x+dx,y,z-dz,x+dx,y-dy,z-dz,p);
+	    em.add_edge(x,y-dy,z-dz,x+dx,y-dy,z-dz,p);
+	    // ==================================== */
+	}
+
+	else if (mode == 3) {
+	    // Polygon Implementation ===========
+	    em.add_triangle(x+dx,y-dy,z-dz,x,y-dy,z,x,y-dy,z-dz,p); // F
+	    em.add_triangle(x+dx,y-dy,z-dz,x+dx,y-dy,z,x,y-dy,z,p); // F
+	    em.add_triangle(x+dx,y-dy,z,x+dx,y-dy,z-dz,x+dx,y,z-dz,p); // R
+	    em.add_triangle(x+dx,y-dy,z,x+dx,y,z-dz,x+dx,y,z,p); // R
+	    em.add_triangle(x,y,z,x,y,z-dz,x,y-dy,z,p); // L
+	    em.add_triangle(x,y-dy,z,x,y,z-dz,x,y-dy,z-dz,p); // L
+	    em.add_triangle(x,y,z-dz,x+dx,y,z-dz,x+dx,y-dy,z-dz,p); // Bottom
+	    em.add_triangle(x,y,z-dz,x+dx,y-dy,z-dz,x,y-dy,z-dz,p); // Bottom
+	    em.add_triangle(x,y,z,x,y-dy,z,x+dx,y-dy,z,p); // T
+	    em.add_triangle(x,y,z,x+dx,y-dy,z,x+dx,y,z,p); // T
+	    em.add_triangle(x,y,z,x+dx,y,z,x+dx,y,z-dz,p); // Back
+	    em.add_triangle(x,y,z,x+dx,y,z-dz,x,y,z-dz,p); // Back
+	    // ==================================== */
+	}
 	return em;
     }
     public Matrix box_edges(double x, double y, double z, 
 			    double dx, double dy, double dz) {
-	    return box_edges(x, y, z, dx, dy, dz, new Pixel(0,0,0));
+	return box_edges(x, y, z, dx, dy, dz, new Pixel(0,0,0));
     }
 
     public boolean sphere(double cx, double cy, double cz, double r, Pixel p) {
@@ -193,16 +215,54 @@ public class Canvas {
 	Matrix em = new Matrix();
 	double s; // Semicircle
 	double t; // Rotation
-	double ds = Math.PI / 45; // Semicircle Step
+	int n = 20; // Steps
+	double ds = Math.PI / n; // Semicircle Step
 	double dt = ds; // Rotation Step
 	double x, y, z;
-	for (t = 0; t < 2 * Math.PI + dt/2; t += dt) {
-	    for (s = 0; s < Math.PI + ds/2; s += ds) {
-		x = r * Math.cos(t) * Math.cos(s) + cx;
-		y = r * Math.cos(t) * Math.sin(s) + cy;
-		z = r * Math.sin(t) + cz;
-		em.add_edge(x, y, z, x, y, z, p); // Change Later
+
+	if (mode == 2) {
+	    // Edge Implementation ==============
+	    for (t = 0; t < 2 * Math.PI + dt/2; t += dt) {
+		for (s = 0; s < Math.PI + ds/2; s += ds) {
+		    x = r * Math.cos(s) + cx;
+		    y = r * Math.sin(s) * Math.cos(t) + cy;
+		    z = r * Math.sin(s) * Math.sin(t) + cz;
+		    em.add_edge(x, y, z, x, y, z, p); // Change Later
+		}
 	    }
+	    // ==================================== */
+	}
+
+	else if (mode == 3) {
+	    // Polygon Implementation =============
+	    double[][] sc = new double[n+1][3];
+	    int c = 0; // Counter
+	    for (s = 0; s < Math.PI + ds/2; s += ds) {
+		sc[c][0] = r * Math.cos(s) + cx; // x
+		sc[c][1] = r * Math.sin(s) + cy; // y
+		sc[c][2] = cz; // z 
+		c++;
+	    }
+	    c = 0;
+	    for (t = dt; t < 2 * Math.PI + dt/2; t += dt) {
+		c = 0;
+		for (s = 0; s < Math.PI + ds/2; s += ds) {
+		    x = r * Math.cos(s) + cx;
+		    y = r * Math.sin(s) * Math.cos(t) + cy;
+		    z = r * Math.sin(s) * Math.sin(t) + cz;
+		    if (c > 0)
+			em.add_triangle(x,y,z,
+					sc[c-1][0],sc[c-1][1],sc[c-1][2],
+					sc[c][0],sc[c][1],sc[c][2],p);
+		    if (c < n)
+			em.add_triangle(x,y,z,
+					sc[c][0],sc[c][1],sc[c][2],
+					sc[c+1][0],sc[c+1][1],sc[c+1][2],p);
+		    sc[c][0] = x; sc[c][1] = y; sc[c][2] = z;
+		    c++;
+		}
+	    }
+	    // ==================================== */
 	}
 	return em;
     }
@@ -223,17 +283,58 @@ public class Canvas {
 	Matrix em = new Matrix();
 	double s; // Circle
 	double t; // Rotation
-	double ds = Math.PI / 60; // Circle Step
+	int n = 20; // Steps / 2
+	double ds = Math.PI / n; // Circle Step
 	double dt = ds * 2; // Rotation Step
 	double x, y, z;
-	for (t = 0; t < 2 * Math.PI + dt/2; t += dt) {
+
+	if (mode == 2) {
+	    // Edge Implementation ==============
+	    for (t = 0; t < 2 * Math.PI + dt/2; t += 100) {
+		for (s = 0; s < 2 * Math.PI + ds/2; s += ds) {
+		    double Rr = (r * Math.cos(s) + R);
+		    x = Rr * Math.cos(t) + cx;
+		    y = Rr * Math.sin(t) + cy;
+		    z = r * Math.sin(s) + cz;
+		    em.add_edge(x, y, z, x, y, z, p); // Change Later
+		}
+	    }
+	    // ==================================== */	
+	}
+
+	else if (mode == 3) {
+	    // Polygon Implementation =============
+	    double[][] sc = new double[2 * n + 1][3];
+	    int c = 0; // Counter
 	    for (s = 0; s < 2 * Math.PI + ds/2; s += ds) {
 		double Rr = (r * Math.cos(s) + R);
-		x = Rr * Math.cos(t) + cx;
-		y = Rr * Math.sin(t) + cy;
-		z = r * Math.sin(s) + cz;
-		em.add_edge(x, y, z, x, y, z, p); // Change Later
+		sc[c][0] = Rr + cx; // x
+		sc[c][1] = cy; // y
+		sc[c][2] = r * Math.sin(s) + cz; // z 
+		c++;
 	    }
+	    c = 0;
+	    for (t = dt; t < 2 * Math.PI + dt/2; t += dt) {
+		c = 0;
+		for (s = 0; s < 2 * Math.PI + ds/2; s += ds) {
+		    double Rr = (r * Math.cos(s) + R);
+		    x = Rr * Math.cos(t) + cx;
+		    y = Rr * Math.sin(t) + cy;
+		    z = r * Math.sin(s) + cz;
+		    if (c > 0)
+			em.add_triangle(x,y,z,
+					sc[c-1][0],sc[c-1][1],sc[c-1][2],
+					sc[c][0],sc[c][1],sc[c][2],p);
+		    if (c < 2 * n)
+			em.add_triangle(x,y,z,
+					sc[c][0],sc[c][1],sc[c][2],
+					sc[c+1][0],sc[c+1][1],sc[c+1][2],p);
+		    sc[c][0] = x; sc[c][1] = y; sc[c][2] = z;
+		    c++;
+		}
+	    }
+	    
+	    // ==================================== */
 	}
 	return em;
     }
@@ -325,21 +426,9 @@ public class Canvas {
 	return bezier(x0, y0, x1, y1, x2, y2, x3, y3, new Pixel(0,0,0));
     }
 
-    // Other Designs
-    public boolean triangle(int x, int y, Pixel p) {
-	int layer = 0;
-	while (y > -1) {
-	    for (int i = Math.max(0, x - layer); i < Math.min(x + layer + 1, this.x); i++) {
-		canvas[y][i] = p;
-	    }
-	    layer++; y--;
-	}
-	return true;
-    }
-
     // EdgeMatrix Functions
     public boolean edge(double x1, double y1, double x2, double y2) {
-	return edge(x1, y1, x2, y2, new Pixel(0,0,0));
+	return edges.add_edge(x1, y1, x2, y2, new Pixel(0,0,0));
     }
     public boolean edge(double x1, double y1, double x2, double y2, Pixel p) {
 	return edges.add_edge(x1, y1, x2, y2, p);
@@ -353,31 +442,59 @@ public class Canvas {
 	return edges.add_edge(x1, y1, z1, x2, y2, z2, p);
     }
 
+    public boolean triangle(double x1, double y1, double z1,
+			    double x2, double y2, double z2,
+			    double x3, double y3, double z3, Pixel p) {
+	return edges.add_triangle(x1,y1,z1,x2,y2,z2,x3,y3,z3,p);
+    }
+    public boolean triangle(double x1, double y1, double z1,
+			    double x2, double y2, double z2,
+			    double x3, double y3, double z3) {
+	return triangle(x1,y1,z1,x2,y2,z2,x3,y3,z3,new Pixel(0,0,0));
+    }
+
     public boolean draw() {
 	Iterator<double[]> edgelist = edges.iterator();
 	Iterator<Pixel> colors = edges.colorIterator();
 	double[] p1, p2;
-	double[] p3 = new double[2];
 	int x1, x2, y1, y2;
-	int x3 = -1; int y3 = -1;
 	Pixel p;
-	while (edgelist.hasNext()) {
-	    p1 = edgelist.next();
-	    p2 = edgelist.next();
-	    if (mode == 3) p3 = edgelist.next();
-	    x1 = (int)(p1[0]);
-	    y1 = (int)(p1[1]);
-	    x2 = (int)(p2[0]);
-	    y2 = (int)(p2[1]);
-	    if (mode == 3) {
+
+	if (mode == 2) {
+	    while (edgelist.hasNext()) {
+		p1 = edgelist.next();
+		p2 = edgelist.next();
+		x1 = (int)(p1[0]);
+		y1 = (int)(p1[1]);
+		x2 = (int)(p2[0]);
+		y2 = (int)(p2[1]);
+		p = colors.next();
+		line(x1, y1, x2, y2, p);
+	    }
+	}
+	else if (mode == 3) {
+	    int x3, y3;
+	    double[] p3;
+	    while (edgelist.hasNext()) {
+		p1 = edgelist.next();
+		p2 = edgelist.next();
+		p3 = edgelist.next();
+		x1 = (int)(p1[0]);
+		y1 = (int)(p1[1]);
+		x2 = (int)(p2[0]);
+		y2 = (int)(p2[1]);
 		x3 = (int)(p3[0]);
 		y3 = (int)(p3[1]);
-	    }
-	    p = colors.next();
-	    line(x1, y1, x2, y2, p);
-	    if (mode == 3) {
-		line(x2, y2, x3, y3, p);
-		line(x3, y3, x1, y1, p);
+		p = colors.next();
+		int dx1 = x2 - x1; int dx2 = x3 - x2;
+		int dy1 = y2 - y1; int dy2 = y3 - y2; 
+		// int dz1 = z2 - z1; int dz2 = z3 - z2; // Not Needed
+		if (dx1 * dy2 - dy1 * dx2 > 0) { 
+		    // Cross Product Z is Positive (Facing Us)
+		    line(x1, y1, x2, y2, p);
+		    line(x2, y2, x3, y3, p);
+		    line(x3, y3, x1, y1, p);
+		}
 	    }
 	}
 	return true;

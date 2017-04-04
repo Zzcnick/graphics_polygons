@@ -2,7 +2,10 @@ all: Picture.java
 	javac Picture.java && java Picture
 
 run: Picture.java
-	make && make png && echo "Saved as out.png" && display out.png
+	make && echo "Running..." && java Picture && make png && rm out.ppm && echo "Saved as out.png" && display out.png
+
+script:
+	make && echo "Running script..." && java Picture test.scr && make png && rm out.ppm && echo "Saved as out.png" && display out.png
 
 clean: 
 	rm *.class *.ppm *~ *.jpg *.png
