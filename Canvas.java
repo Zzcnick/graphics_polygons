@@ -489,7 +489,7 @@ public class Canvas {
 		int dx1 = x2 - x1; int dx2 = x3 - x2;
 		int dy1 = y2 - y1; int dy2 = y3 - y2; 
 		// int dz1 = z2 - z1; int dz2 = z3 - z2; // Not Needed
-		if (dx1 * dy2 - dy1 * dx2 > 0) { 
+		if (dx1 * dy2 - dy1 * dx2 >= 0) { 
 		    // Cross Product Z is Positive (Facing Us)
 		    line(x1, y1, x2, y2, p);
 		    line(x2, y2, x3, y3, p);
