@@ -457,43 +457,43 @@ public class Canvas {
 	Iterator<double[]> edgelist = edges.iterator();
 	Iterator<Pixel> colors = edges.colorIterator();
 	double[] p1, p2;
-	int x1, x2, y1, y2;
+	double x1, x2, y1, y2;
 	Pixel p;
 
 	if (mode == 2) {
 	    while (edgelist.hasNext()) {
 		p1 = edgelist.next();
 		p2 = edgelist.next();
-		x1 = (int)(p1[0]);
-		y1 = (int)(p1[1]);
-		x2 = (int)(p2[0]);
-		y2 = (int)(p2[1]);
+		x1 = p1[0];
+		y1 = p1[1];
+		x2 = p2[0];
+		y2 = p2[1];
 		p = colors.next();
-		line(x1, y1, x2, y2, p);
+		line((int)x1, (int)y1, (int)x2, (int)y2, p);
 	    }
 	}
 	else if (mode == 3) {
-	    int x3, y3;
+	    double x3, y3;
 	    double[] p3;
 	    while (edgelist.hasNext()) {
 		p1 = edgelist.next();
 		p2 = edgelist.next();
 		p3 = edgelist.next();
-		x1 = (int)(p1[0]);
-		y1 = (int)(p1[1]);
-		x2 = (int)(p2[0]);
-		y2 = (int)(p2[1]);
-		x3 = (int)(p3[0]);
-		y3 = (int)(p3[1]);
+		x1 = p1[0];
+		y1 = p1[1];
+		x2 = p2[0];
+		y2 = p2[1];
+		x3 = p3[0];
+		y3 = p3[1];
 		p = colors.next();
-		int dx1 = x2 - x1; int dx2 = x3 - x2;
-		int dy1 = y2 - y1; int dy2 = y3 - y2; 
-		// int dz1 = z2 - z1; int dz2 = z3 - z2; // Not Needed
-		if (dx1 * dy2 - dy1 * dx2 >= 0) { 
+		double dx1 = x2 - x1; double dx2 = x3 - x2;
+		double dy1 = y2 - y1; double dy2 = y3 - y2; 
+		// double dz1 = z2 - z1; double dz2 = z3 - z2; // Not Needed
+		if (dx1 * dy2 - dy1 * dx2 > 0) { 
 		    // Cross Product Z is Positive (Facing Us)
-		    line(x1, y1, x2, y2, p);
-		    line(x2, y2, x3, y3, p);
-		    line(x3, y3, x1, y1, p);
+		    line((int)x1, (int)y1, (int)x2, (int)y2, p);
+		    line((int)x2, (int)y2, (int)x3, (int)y3, p);
+		    line((int)x3, (int)y3, (int)x1, (int)y1, p);
 		}
 	    }
 	}
